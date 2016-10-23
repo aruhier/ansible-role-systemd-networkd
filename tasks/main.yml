@@ -1,0 +1,16 @@
+---
+
+- include: profiles.yml
+
+- name: enable systemd-networkd and systemd-resolved
+  service: name={{ item }} enabled=yes
+  with_items:
+    - systemd-networkd
+    - systemd-resolved
+  when: systemd_networkd_network or systemd_networkd_link or systemd_networkd_netdev
+
+- name: restart systemd-networkd
+  service: name="systemd-networkd" state=restarted
+  when: systemd_networkd_apply_config
+
+# vim: set ts=2 sw=2:
