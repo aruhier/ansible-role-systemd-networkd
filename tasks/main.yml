@@ -3,11 +3,12 @@
 - include: profiles.yml
 
 - name: enable systemd-networkd and systemd-resolved
-  service: name={{ item }} enabled=yes
-  with_items:
-    - systemd-networkd
-    - systemd-resolved
+  service: name=systemd-networkd enabled=yes
   when: systemd_networkd_network or systemd_networkd_link or systemd_networkd_netdev
+
+- name: enable systemd-resolved
+  service: name=systemd-resolved enabled=yes state=started
+  when: systemd_networkd_enable_resolved
 
 - name: restart systemd-networkd
   service: name="systemd-networkd" state=restarted

@@ -5,5 +5,6 @@ systemd_networkd_netdev: {}
 systemd_networkd_network: {}
 
 systemd_networkd_apply_config: false
+systemd_networkd_enable_resolved: true
 
 # vim: set ts=2 sw=2:

@@ -18,6 +18,9 @@ systemd_networkd_network: {}
 
 # does the role have to restart systemd-networkd to apply the new profiles ?
 systemd_networkd_apply_config: false
+
+# enable or not systemd_resolved
+systemd_networkd_enable_resolved: true
 ```
 
 Dependencies
