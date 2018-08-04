@@ -1,10 +1,10 @@
 #{{ ansible_managed }}
 
 {% for section_dict in item.value %}
-{% for section, options in section_dict.iteritems() %}
+{% for section, options in section_dict.items() %}
 [{{ section }}]
 {% for opt in options %}
-{% for key, val in opt.iteritems() %}
+{% for key, val in opt.items() %}
 {% if val is string or val is not iterable %}
 {{ key }}={{ val }}
 {% else %}
