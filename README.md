@@ -70,7 +70,7 @@ systemd_networkd_netdev:
     - NetDev:
       - Name: "bond0"
       - Kind: "bond"
-    - Bond
+    - Bond:
       - Mode: "802.3ad"
       - LACPTransmitRate: "fast"
 
