@@ -1,0 +1,8 @@
+---
+# handlers for ansible-role-systemd-networkd
+
+- name: restart systemd-networkd
+  service:
+    name: systemd-networkd
+    state: restarted
+  when: systemd_networkd_apply_config

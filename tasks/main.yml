@@ -10,8 +10,4 @@
   service: name=systemd-resolved enabled=yes state=started
   when: systemd_networkd_enable_resolved
 
-- name: restart systemd-networkd
-  service: name="systemd-networkd" state=restarted
-  when: systemd_networkd_apply_config
-
 # vim: set ts=2 sw=2:
