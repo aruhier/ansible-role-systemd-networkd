@@ -1,17 +1,18 @@
 ---
 
-- include: profiles.yml
+- import_tasks: profiles.yml
 
 - name: enable systemd-networkd
-  service: name=systemd-networkd enabled=yes
+  service:
+    name: systemd-networkd
+    enabled: yes
   when: systemd_networkd_network or systemd_networkd_link or systemd_networkd_netdev
 
 - name: start and enable systemd-resolved
-  service: name=systemd-resolved enabled=yes state=started
+  service:
+    name: systemd-resolved
+    enabled: yes
+    state: started
   when: systemd_networkd_enable_resolved
-
-- name: restart systemd-networkd
-  service: name="systemd-networkd" state=restarted
-  when: systemd_networkd_apply_config
 
 # vim: set ts=2 sw=2:
