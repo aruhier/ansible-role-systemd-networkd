@@ -6,6 +6,7 @@
     dest: "/etc/systemd/network/{{ item.key }}.link"
     mode: 0644
   loop: "{{ systemd_networkd_link | dict2items }}"
+  notify: restart systemd-networkd
 
 - name: copy .netdev profiles
   template:
@@ -13,6 +14,7 @@
     dest: "/etc/systemd/network/{{ item.key }}.netdev"
     mode: 0644
   loop: "{{ systemd_networkd_netdev | dict2items }}"
+  notify: restart systemd-networkd
 
 - name: copy .network profiles
   template:
@@ -20,5 +22,6 @@
     dest: "/etc/systemd/network/{{ item.key }}.network"
     mode: 0644
   loop: "{{ systemd_networkd_network | dict2items }}"
+  notify: restart systemd-networkd
 
 # vim: set ts=2 sw=2:
