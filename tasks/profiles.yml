@@ -4,7 +4,9 @@
   template:
     src: "systemd_networkd_profile.j2"
     dest: "/etc/systemd/network/{{ item.key }}.link"
-    mode: 0644
+    owner: root
+    group: systemd-network
+    mode: 0640
   loop: "{{ systemd_networkd_link | dict2items }}"
   notify: restart systemd-networkd
 
@@ -12,7 +14,9 @@
   template:
     src: "systemd_networkd_profile.j2"
     dest: "/etc/systemd/network/{{ item.key }}.netdev"
-    mode: 0644
+    owner: root
+    group: systemd-network
+    mode: 0640
   loop: "{{ systemd_networkd_netdev | dict2items }}"
   notify: restart systemd-networkd
 
@@ -20,7 +24,9 @@
   template:
     src: "systemd_networkd_profile.j2"
     dest: "/etc/systemd/network/{{ item.key }}.network"
-    mode: 0644
+    owner: root
+    group: systemd-network
+    mode: 0640
   loop: "{{ systemd_networkd_network | dict2items }}"
   notify: restart systemd-networkd
 
