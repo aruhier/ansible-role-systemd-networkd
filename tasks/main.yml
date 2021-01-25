@@ -15,4 +15,12 @@
     state: started
   when: systemd_networkd_enable_resolved
 
+- name: replace /etc/resolv.conf with a symlink to the systemd-resolved stub
+  file:
+    path: /etc/resolv.conf
+    src: /run/systemd/resolve/stub-resolv.conf
+    state: link
+    force: yes
+  when: systemd_networkd_symlink_resolv_conf
+
 # vim: set ts=2 sw=2:
