@@ -1,22 +1,22 @@
-Ansible Role: systemd-networkd
-==============================
+Ansible Role: systemd\_networkd
+===============================
 
-Ansible role to configure systemd-networkd profiles.
+Ansible role to configure systemd-networkd.
 
 Role Variables
 --------------
 
 ```yaml
-# link profiles
+# links
 systemd_networkd_link: {}
 
-# netdev profiles
+# netdevs
 systemd_networkd_netdev: {}
 
-# network profiles
+# networks
 systemd_networkd_network: {}
 
-# does the role have to restart systemd-networkd to apply the new profiles ?
+# does the role have to restart systemd-networkd to apply the new configuration?
 systemd_networkd_apply_config: false
 
 # enable or not systemd_resolved
@@ -36,7 +36,7 @@ None
 Example Playbook
 -------------------------
 
-1) Configure a network profile
+1) Configure a network interface
 
 ```yaml
 systemd_networkd_network:
@@ -58,14 +58,14 @@ systemd_networkd_network:
       - Gateway: "2001:db8::1"
 ```
 
-It will create a `eth0.network` profile in `/etc/systemd/network/`, and enable
+It will create a `eth0.network` file in `/etc/systemd/network/`, and enable
 `systemd-networkd` and `systemd-resolved`.
 
-Every key under `systemd_networkd_*` corresponds to the profile name to create
+Every key under `systemd_networkd_*` corresponds to the file name to create
 (`.network` in `systemd_networkd_network`, `.link` in systemd_networkd_link,
-etc…). Then every key under the profile name is a section documented in
-systemd-networkd, which contains the couples of `option: value` for your
-profile. Each couple is then converted to the format `option=value`.
+etc…). Then every key under the file name is a section documented in
+systemd-networkd, which contains the couples of `option: value` pairs. Each
+couple is then converted to the format `option=value`.
 
 2) Configure a bonding interface
 

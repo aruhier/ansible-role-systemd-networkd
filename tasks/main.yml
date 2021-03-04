@@ -2,7 +2,7 @@
 - import_tasks: cleanup.yml
   when: systemd_networkd_cleanup | bool
 
-- import_tasks: profiles.yml
+- import_tasks: config.yml
 
 - name: enable systemd-networkd
   become: true
