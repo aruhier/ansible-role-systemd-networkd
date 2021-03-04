@@ -21,6 +21,11 @@ systemd_networkd_apply_config: false
 
 # enable or not systemd_resolved
 systemd_networkd_enable_resolved: true
+
+# remove configuration files matching a prefix
+systemd_networkd_cleanup: false
+systemd_networkd_cleanup_prefix: ''
+systemd_networkd_cleanup_prefix_is_regex: false
 ```
 
 Dependencies
