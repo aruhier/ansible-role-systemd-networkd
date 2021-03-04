@@ -1,6 +1,7 @@
 ---
 
 - name: copy .link profiles
+  become: true
   template:
     src: "systemd_networkd_profile.j2"
     dest: "/etc/systemd/network/{{ item.key }}.link"
@@ -11,6 +12,7 @@
   notify: restart systemd-networkd
 
 - name: copy .netdev profiles
+  become: true
   template:
     src: "systemd_networkd_profile.j2"
     dest: "/etc/systemd/network/{{ item.key }}.netdev"
@@ -21,6 +23,7 @@
   notify: restart systemd-networkd
 
 - name: copy .network profiles
+  become: true
   template:
     src: "systemd_networkd_profile.j2"
     dest: "/etc/systemd/network/{{ item.key }}.network"
