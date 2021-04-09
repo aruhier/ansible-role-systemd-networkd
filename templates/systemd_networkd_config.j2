@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 
-{% for section_dict in item.value %}
+{% for section_dict in item.1.value %}
 {% for section, options in section_dict.items() %}
 [{{ section }}]
 {% for opt in options %}

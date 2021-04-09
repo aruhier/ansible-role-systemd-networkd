@@ -1,14 +1,18 @@
 ---
+- import_tasks: cleanup.yml
+  when: systemd_networkd_cleanup | bool
 
-- import_tasks: profiles.yml
+- import_tasks: config.yml
 
 - name: enable systemd-networkd
+  become: true
   service:
     name: systemd-networkd
     enabled: yes
   when: systemd_networkd_network or systemd_networkd_link or systemd_networkd_netdev
 
 - name: start and enable systemd-resolved
+  become: true
   service:
     name: systemd-resolved
     enabled: yes
@@ -16,6 +20,7 @@
   when: systemd_networkd_enable_resolved
 
 - name: replace /etc/resolv.conf with a symlink to the systemd-resolved stub
+  become: true
   file:
     path: /etc/resolv.conf
     src: /run/systemd/resolve/stub-resolv.conf
