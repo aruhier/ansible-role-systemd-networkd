@@ -2,6 +2,7 @@
 # handlers for ansible-role-systemd-networkd
 
 - name: restart systemd-networkd
+  become: true
   service:
     name: systemd-networkd
     state: restarted
