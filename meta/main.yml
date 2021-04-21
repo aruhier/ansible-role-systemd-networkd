@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: systemd_networkd
   author: "Anthony Ruhier & StackHPC Ltd"
   description: Configures systemd-networkd
   license: BSD
