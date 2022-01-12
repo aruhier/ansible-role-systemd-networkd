@@ -25,4 +25,13 @@
       name: "{{ item.1.key }}"
   notify: restart systemd-networkd
 
+- name: Ensure nsswitch uses resolved
+  become: true
+  template:
+    src: "nsswitch.conf.j2"
+    dest: "/etc/nsswitch.conf"
+    owner: root
+    group: root
+    mode: 0644
+
 # vim: set ts=2 sw=2:
