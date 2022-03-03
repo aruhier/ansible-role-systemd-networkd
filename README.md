@@ -91,6 +91,35 @@ systemd_networkd_network:
 What will create an LACP bond interface `bond0`, containing all interfaces
 starting by `eth`.
 
+systemd-resolved
+----------------
+
+By default this role manages `/etc/resolv.conf` and `/etc/nsswitch.conf` to use
+the DNS stub resolver and NSS modules provided by `systemd-resolved`.
+
+This behaviour can either be disabled by setting
+`systemd_networkd_symlink_resolv_conf` and
+`systemd_networkd_manage_nsswitch_config` to `false` or the resolution order can
+be changed. The default configuration uses the default `files` database and
+systemd modules where approriate:
+
+```yaml
+systemd_networkd_nsswitch_passwd: "files systemd"
+systemd_networkd_nsswitch_group: "files systemd"
+systemd_networkd_nsswitch_shadow: "files systemd"
+systemd_networkd_nsswitch_gshadow: "files systemd"
+systemd_networkd_nsswitch_hosts: "files resolve [!UNAVAIL=return] myhostname dns"
+systemd_networkd_nsswitch_networks: "files dns"
+systemd_networkd_nsswitch_protocols: "files"
+systemd_networkd_nsswitch_services: "files"
+systemd_networkd_nsswitch_ethers: "files"
+systemd_networkd_nsswitch_rpc: "files"
+systemd_networkd_nsswitch_netgroup: "nis"
+systemd_networkd_nsswitch_automount: "files"
+systemd_networkd_nsswitch_aliases: "files"
+systemd_networkd_nsswitch_publickey: "files"
+```
+
 License
 -------
 

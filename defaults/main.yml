@@ -12,4 +12,20 @@ systemd_networkd_cleanup: false
 systemd_networkd_cleanup_patterns: []
 systemd_networkd_cleanup_patterns_use_regex: false
 
+systemd_networkd_manage_nsswitch_config: true
+systemd_networkd_nsswitch_passwd: "files systemd"
+systemd_networkd_nsswitch_group: "files systemd"
+systemd_networkd_nsswitch_shadow: "files systemd"
+systemd_networkd_nsswitch_gshadow: "files systemd"
+systemd_networkd_nsswitch_hosts: "files resolve [!UNAVAIL=return] myhostname dns"
+systemd_networkd_nsswitch_networks: "files dns"
+systemd_networkd_nsswitch_protocols: "files"
+systemd_networkd_nsswitch_services: "files"
+systemd_networkd_nsswitch_ethers: "files"
+systemd_networkd_nsswitch_rpc: "files"
+systemd_networkd_nsswitch_netgroup: "nis"
+systemd_networkd_nsswitch_automount: "files"
+systemd_networkd_nsswitch_aliases: "files"
+systemd_networkd_nsswitch_publickey: "files"
+
 # vim: set ts=2 sw=2:

@@ -1,0 +1,19 @@
+# {{ ansible_managed }}
+passwd:    {{ systemd_networkd_nsswitch_passwd }}
+group:     {{ systemd_networkd_nsswitch_group }}
+shadow:    {{ systemd_networkd_nsswitch_shadow }}
+gshadow:   {{ systemd_networkd_nsswitch_gshadow }}
+
+hosts:     {{ systemd_networkd_nsswitch_hosts }}
+networks:  {{ systemd_networkd_nsswitch_networks }}
+
+protocols: {{ systemd_networkd_nsswitch_protocols }}
+services:  {{ systemd_networkd_nsswitch_services }}
+ethers:    {{ systemd_networkd_nsswitch_ethers }}
+rpc:       {{ systemd_networkd_nsswitch_rpc }}
+
+netgroup:  {{ systemd_networkd_nsswitch_netgroup }}
+
+automount: {{ systemd_networkd_nsswitch_automount }}
+aliases:   {{ systemd_networkd_nsswitch_aliases }}
+publickey: {{ systemd_networkd_nsswitch_publickey }}
