@@ -24,6 +24,11 @@
       type: "{{ item.0.type }}"
       name: "{{ item.1.key }}"
   notify: restart systemd-networkd
+  register: systemd_networkd_status
+
+- name: Set systemd_network_status task
+  set_fact:
+    systemd_networkd_status: "{{ systemd_networkd_status }}"
 
 - name: Manage nsswitch configuration
   become: true
@@ -34,5 +39,10 @@
     group: root
     mode: 0644
   when: systemd_networkd_manage_nsswitch_config
+  register: systemd_networkd_nssswitch_changed
+
+- name: Set systemd_networkd_nssswitch_changed task
+  set_fact:
+    systemd_networkd_nssswitch_changed: "{{ systemd_networkd_nssswitch_changed }}"
 
 # vim: set ts=2 sw=2:
