@@ -1,5 +1,4 @@
 ---
-
 systemd_networkd_link: {}
 systemd_networkd_netdev: {}
 systemd_networkd_network: {}
@@ -28,4 +27,6 @@ systemd_networkd_nsswitch_automount: "files"
 systemd_networkd_nsswitch_aliases: "files"
 systemd_networkd_nsswitch_publickey: "files"
 
+systemd_networkd_rt_tables: []
+systemd_networkd_rttables_conf_path: "/etc/iproute2/rt_tables.d"
 # vim: set ts=2 sw=2:
