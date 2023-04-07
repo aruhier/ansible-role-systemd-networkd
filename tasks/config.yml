@@ -1,4 +1,17 @@
 ---
+- name: Create route table if necessary
+  become: true
+  template:
+    src: "rt_tables.j2"
+    dest: "{{ systemd_networkd_rttables_conf_path }}/{{ item.name }}.conf"
+    owner: root
+    group: root
+    mode: 0640
+  loop: "{{ systemd_networkd_rt_tables }}"
+  loop_control:
+    id: "{{ item.id }}"
+    name: "{{ item.name }}"
+
 - name: Ensure systemd-networkd configuration files exist
   become: true
   vars:
@@ -41,5 +54,4 @@
 - name: Set systemd_networkd_nssswitch_changed task
   ansible.builtin.set_fact:
     systemd_networkd_nssswitch_changed: "{{ systemd_networkd_nssswitch_changed }}"
-
 # vim: set ts=2 sw=2:
