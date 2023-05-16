@@ -20,9 +20,7 @@
     mode: 0640
   loop: "{{ query('subelements', all_files, 'files') }}"
   loop_control:
-    label:
-      type: "{{ item.0.type }}"
-      name: "{{ item.1.key }}"
+    label: "type: {{ item.0.type }}, name: {{ item.1.key }}"
   notify: restart systemd-networkd
   register: systemd_networkd_status
 
