@@ -11,6 +11,11 @@
     enabled: yes
   when: systemd_networkd_network or systemd_networkd_link or systemd_networkd_netdev
 
+- name: Make sure systemd-resolved is installed
+  ansible.builtin.package:
+    name: systemd-resolved
+    state: present
+
 - name: start and enable systemd-resolved
   become: true
   service:
