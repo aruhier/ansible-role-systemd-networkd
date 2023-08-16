@@ -4,6 +4,12 @@
 
 - import_tasks: config.yml
 
+- name: Make sure systemd-resolved is installed
+  become: true
+  ansible.builtin.package:
+    name: systemd-resolved
+    state: present
+
 - name: enable systemd-networkd
   become: true
   service:
