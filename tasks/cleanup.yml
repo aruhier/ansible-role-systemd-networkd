@@ -4,7 +4,7 @@
 
 - name: Find unexpected systemd-networkd configuration files
   become: true
-  find:
+  ansible.builtin.find:
     paths: "/etc/systemd/network"
     patterns: "{{ systemd_networkd_cleanup_patterns }}"
     use_regex: "{{ systemd_networkd_cleanup_patterns_use_regex | bool }}"
@@ -17,9 +17,9 @@
       - "{{ systemd_networkd_link.keys() | map('regex_replace', '^(.*)$', '\\1.link') | list }}"
       - "{{ systemd_networkd_netdev.keys() | map('regex_replace', '^(.*)$', '\\1.netdev') | list }}"
       - "{{ systemd_networkd_network.keys() | map('regex_replace', '^(.*)$', '\\1.network') | list }}"
-  file:
+  ansible.builtin.file:
     path: "/etc/systemd/network/{{ item }}"
     state: absent
   loop: "{{ networkd_files.files | map(attribute='path') | map('basename') | difference(expected_files | flatten) | list }}"
   notify:
-    - restart systemd-networkd
+    - Restart systemd-networkd
