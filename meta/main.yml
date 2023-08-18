@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   role_name: systemd_networkd
-  author: "Anthony Ruhier & StackHPC Ltd"
+  author: Anthony Ruhier & StackHPC Ltd
   description: Configures systemd-networkd
   license: BSD
   min_ansible_version: "2.5"

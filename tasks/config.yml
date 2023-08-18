@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure systemd-networkd configuration files exist
   become: true
   vars:
@@ -13,11 +12,11 @@
       - type: network
         files: "{{ systemd_networkd_network | dict2items }}"
   ansible.builtin.template:
-    src: "systemd_networkd_config.j2"
-    dest: "/etc/systemd/network/{{ item.1.key }}.{{ item.0.type }}"
+    src: systemd_networkd_config.j2
+    dest: /etc/systemd/network/{{ item.1.key }}.{{ item.0.type }}
     owner: root
     group: systemd-network
-    mode: '0640'
+    mode: "0640"
   loop: "{{ query('subelements', all_files, 'files') }}"
   loop_control:
     label: "type: {{ item.0.type }}, name: {{ item.1.key }}"
@@ -31,11 +30,11 @@
 - name: Manage nsswitch configuration
   become: true
   ansible.builtin.template:
-    src: "nsswitch.conf.j2"
-    dest: "/etc/nsswitch.conf"
+    src: nsswitch.conf.j2
+    dest: /etc/nsswitch.conf
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   when: systemd_networkd_manage_nsswitch_config
   register: systemd_networkd_nssswitch_changed
 
