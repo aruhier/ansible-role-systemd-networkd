@@ -9,6 +9,9 @@
   ansible.builtin.package:
     name: systemd-resolved
     state: present
+  when:
+    - ansible_facts.distribution | lower == 'debian'
+    - ansible_facts.distribution_major_version >= '12'
 
 - name: enable systemd-networkd
   become: true
