@@ -1,31 +1,33 @@
 ---
-- import_tasks: cleanup.yml
+- name: Import cleanup tasks
+  ansible.builtin.import_tasks: cleanup.yml
   when: systemd_networkd_cleanup | bool
 
-- import_tasks: config.yml
+- name: Import config tasks
+  ansible.builtin.import_tasks: config.yml
 
-- name: enable systemd-networkd
+- name: Enable systemd-networkd
   become: true
-  service:
+  ansible.builtin.systemd:
     name: systemd-networkd
-    enabled: yes
+    enabled: true
   when: systemd_networkd_network or systemd_networkd_link or systemd_networkd_netdev
 
-- name: start and enable systemd-resolved
+- name: Start and enable systemd-resolved
   become: true
-  service:
+  ansible.builtin.systemd:
     name: systemd-resolved
-    enabled: yes
+    enabled: true
     state: started
   when: systemd_networkd_enable_resolved
 
-- name: replace /etc/resolv.conf with a symlink to the systemd-resolved stub
+- name: Replace /etc/resolv.conf with a symlink to the systemd-resolved stub
   become: true
-  file:
+  ansible.builtin.file:
     path: /etc/resolv.conf
     src: /run/systemd/resolve/stub-resolv.conf
     state: link
-    force: yes
+    force: true
   when: systemd_networkd_symlink_resolv_conf
 
 # vim: set ts=2 sw=2:
