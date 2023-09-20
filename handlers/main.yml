@@ -6,4 +6,5 @@
   ansible.builtin.systemd:
     name: systemd-networkd
     state: restarted
+    daemon-reload: true
   when: systemd_networkd_apply_config

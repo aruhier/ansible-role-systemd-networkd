@@ -1,2 +1,3 @@
-# {{ ansible_managed }}
+{% for item in systemd_networkd_rt_tables %}
 {{ item.id }} {{ item.name }}
+{% endfor %}

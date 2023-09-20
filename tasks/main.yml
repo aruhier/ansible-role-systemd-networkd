@@ -29,5 +29,4 @@
     state: link
     force: true
   when: systemd_networkd_symlink_resolv_conf
-
 # vim: set ts=2 sw=2:
