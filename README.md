@@ -91,6 +91,98 @@ systemd_networkd_network:
 What will create an LACP bond interface `bond0`, containing all interfaces
 starting by `eth`.
 
+3) Configure interface based routing
+
+```yaml
+systemd_networkd_netdev:
+  netdev_bond0:
+    - NetDev:
+        Name: bond0
+        Kind: bond
+
+    - Bond:
+        Mode: active-backup
+        MIMonitorSec: 0.1
+        UpDelaySec: 0.2
+        DownDelaySec: 0.2
+        LACPTransmitRate: fast
+        TransmitHashPolicy: layer2+3
+
+  netdev_vlan11:
+    - NetDev:
+        Name: iface_vlan11
+        Kind: vlan
+    - VLAN:
+        Id: 11
+
+  netdev_vlan20:
+    - NetDev:
+        Name: iface_vlan20
+        Kind: vlan
+    - VLAN:
+        Id: 20
+
+systemd_networkd_network:
+  eno3:
+    - Match:
+        Name: eth0
+    - Network:
+        - Bond: bond0
+        - PrimarySlave: "true"
+  eno4:
+    - Match:
+        Name: eno4
+    - Network:
+        - Bond: bond0
+
+# In this example, "vlan10" (10.0.10.0/24) is untagged by the switch as default VLAN for the port
+  iface_bond0:
+    - Match:
+        Name: eno3 eno4
+    - Network:
+        - DHCP: "no"
+        - DNS: "{{ common_dns_server }}"
+
+        - Address: "10.0.10.161/24"
+        - Gateway: "{{ common_gateway }}"
+        - VLAN: netdev_vlan11
+        - VLAN: netdev_vlan20
+
+  iface_vlan11:
+    - Match:
+        Name: netdev_vlan11
+    - Network:
+        VLAN: netdev_vlan11
+    - Address:
+        Address: 10.0.11.161/24
+    - RoutingPolicyRule:
+        From: 10.0.11.161/32
+        Table: rtvlan11
+    - RoutingPolicyRule:
+        To: 10.0.11.161/32
+        Table: rtvlan11
+
+  iface_vlan20:
+    - Match:
+        Name: netdev_vlan20
+    - Network:
+        VLAN: netdev_vlan20
+    - Address:
+        Address: 10.0.20.161/24
+    - RoutingPolicyRule:
+        From: 10.0.20.161/32
+        Table: rtvlan20
+    - RoutingPolicyRule:
+        To: 10.0.20.161/32
+        Table: rtvlan20
+
+systemd_networkd_rt_tables:
+  - id: 10
+    name: rtvlan10
+  - id: 20
+    name: rtvlan20
+```
+
 systemd-resolved
 ----------------
 
