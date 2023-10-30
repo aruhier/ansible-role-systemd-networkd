@@ -20,9 +20,7 @@
     mode: 0640
   loop: "{{ query('subelements', all_files, 'files') }}"
   loop_control:
-    label:
-      type: "{{ item.0.type }}"
-      name: "{{ item.1.key }}"
+    label: "{{ item.0.type }} - {{ item.1.key }}"
   notify: restart systemd-networkd
 
 # vim: set ts=2 sw=2:
