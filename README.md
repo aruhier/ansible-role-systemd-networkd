@@ -94,91 +94,110 @@ starting by `eth`.
 3) Configure interface based routing
 
 ```yaml
+systemd_networkd_conf:
+  route_tables:
+    - Network:
+        - RouteTable: "rtvlan10:10"
+        - RouteTable: "rtvlan11:11"
+
 systemd_networkd_netdev:
   netdev_bond0:
     - NetDev:
-        Name: bond0
-        Kind: bond
+        - Name: bond0
+        - Kind: bond
 
     - Bond:
-        Mode: active-backup
-        MIMonitorSec: 0.1
-        UpDelaySec: 0.2
-        DownDelaySec: 0.2
-        LACPTransmitRate: fast
-        TransmitHashPolicy: layer2+3
+        - Mode: active-backup
+        - MIIMonitorSec: 0.1
+        - UpDelaySec: 0.2
+        - DownDelaySec: 0.2
+        - LACPTransmitRate: fast
+        - TransmitHashPolicy: layer2+3
+
+  netdev_vlan10:
+    - NetDev:
+        - Name: netdev_vlan10
+        - Kind: vlan
+    - VLAN:
+        - Id: 10
 
   netdev_vlan11:
     - NetDev:
-        Name: iface_vlan11
-        Kind: vlan
+        - Name: netdev_vlan11
+        - Kind: vlan
     - VLAN:
-        Id: 11
+        - Id: 11
 
-  netdev_vlan20:
+  netdev_bridge_vm_vlan10:
     - NetDev:
-        Name: iface_vlan20
-        Kind: vlan
-    - VLAN:
-        Id: 20
+        - Name: netdev_bridge_vlan10
+        - Kind: bridge
+
+  netdev_bridge_vm_vlan11:
+    - NetDev:
+        - Name: netdev_bridge_vlan11
+        - Kind: bridge
 
 systemd_networkd_network:
+  # Physical interfaces
   eno3:
     - Match:
-        Name: eth0
+        - Name: eno3
     - Network:
         - Bond: bond0
-        - PrimarySlave: "true"
   eno4:
     - Match:
-        Name: eno4
+        - Name: eno4
     - Network:
         - Bond: bond0
 
-# In this example, "vlan10" (10.0.10.0/24) is untagged by the switch as default VLAN for the port
-  iface_bond0:
+  bond0:
     - Match:
-        Name: eno3 eno4
+        - Name: bond0
     - Network:
+        - Description: "Static/Unconfigured bond, for eno3 & eno4"
+
+        # We don't want any IP "on" the bond itself
+        - LinkLocalAddressing: "no"
+        - LLDP: "no"
+        - EmitLLDP: "no"
+        - IPv6AcceptRA: "no"
+        - IPv6SendRA: "no"
+
+        - VLAN: netdev_vlan10
+        - VLAN: netdev_vlan11
+
+  network_interface_vlan10:
+    - Match:
+        - Name: netdev_vlan10
+        - Type: vlan
+    - Network:
+        - Description: "Network interface on vlan10, connected to netdev_bridge_vm_vlan10"
+        - Bridge: "netdev_bridge_vm_vlan10"
         - DHCP: "no"
-        - DNS: "{{ common_dns_server }}"
+        - DNS: &gw_vlan10 "10.0.10.1"
 
         - Address: "10.0.10.161/24"
-        - Gateway: "{{ common_gateway }}"
-        - VLAN: netdev_vlan11
-        - VLAN: netdev_vlan20
+        - DNS: *gw_vlan10
+        - Gateway: *gw_vlan10
 
-  iface_vlan11:
+  network_interface_vlan11:
     - Match:
-        Name: netdev_vlan11
+        - Name: netdev_vlan11
+        - Type: vlan
     - Network:
-        VLAN: netdev_vlan11
-    - Address:
-        Address: 10.0.11.161/24
-    - RoutingPolicyRule:
-        From: 10.0.11.161/32
-        Table: rtvlan11
-    - RoutingPolicyRule:
-        To: 10.0.11.161/32
-        Table: rtvlan11
+        - Description: "Network interface on vlan11, connected to netdev_bridge_vm_vlan11"
+        - Bridge: "netdev_bridge_vm_vlan11"
+        - DHCP: "no"
+        - DNS: &gw_vlan11 "10.0.11.1"
 
-  iface_vlan20:
-    - Match:
-        Name: netdev_vlan20
-    - Network:
-        VLAN: netdev_vlan20
-    - Address:
-        Address: 10.0.20.161/24
-    - RoutingPolicyRule:
-        From: 10.0.20.161/32
-        Table: rtvlan20
-    - RoutingPolicyRule:
-        To: 10.0.20.161/32
-        Table: rtvlan20
+        - Address: "10.0.11.161/24"
+        - DNS: *gw_vlan11
+        - Gateway: *gw_vlan11
 
 systemd_networkd_rt_tables:
-  - id: 10
-    name: rtvlan10
+  - id: 11
+    name: rtvlan11
   - id: 20
     name: rtvlan20
 ```
