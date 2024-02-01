@@ -7,30 +7,6 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK"
   loop: "{{ systemd_networkd_rt_tables }}"
 
-- name: Ensure systemd-networkd configuration files exist
-  become: true
-  vars:
-    # Profiles to iterate over. Using a single looped task is more performant
-    # than multiple tasks.
-    all_files:
-      - type: link
-        files: "{{ systemd_networkd_link | dict2items }}"
-      - type: netdev
-        files: "{{ systemd_networkd_netdev | dict2items }}"
-      - type: network
-        files: "{{ systemd_networkd_network | dict2items }}"
-  ansible.builtin.template:
-    src: systemd_networkd_config.j2
-    dest: /etc/systemd/network/{{ item.1.key }}.{{ item.0.type }}
-    owner: root
-    group: systemd-network
-    mode: "0640"
-  loop: "{{ query('subelements', all_files, 'files') }}"
-  loop_control:
-    label: "type: {{ item.0.type }}, name: {{ item.1.key }}"
-  notify: Restart systemd-networkd
-  register: systemd_networkd_status
-
 - name: Create systemd conf folder
   become: true
   ansible.builtin.file:
@@ -40,24 +16,35 @@
     owner: root
     group: root
 
-- name: Systemd configuration files exist
+- name: Ensure systemd-networkd configuration files exist
   become: true
   vars:
+    # Profiles to iterate over. Using a single looped task is more performant
+    # than multiple tasks.
     all_files:
+      - type: link
+        files: "{{ systemd_networkd_link | dict2items }}"
+        dest_folder: "{{ systemd_networkd_directory }}"
+      - type: netdev
+        files: "{{ systemd_networkd_netdev | dict2items }}"
+        dest_folder: "{{ systemd_networkd_directory }}"
+      - type: network
+        files: "{{ systemd_networkd_network | dict2items }}"
+        dest_folder: "{{ systemd_networkd_directory }}"
       - type: conf
         files: "{{ systemd_networkd_conf | dict2items }}"
-  template:
-    src: "systemd_networkd_config.j2"
-    dest: "{{ systemd_networkd_conf_directory }}/{{ item.1.key }}.{{ item.0.type }}"
+        dest_folder: "{{ systemd_networkd_conf_directory }}"
+  ansible.builtin.template:
+    src: systemd_networkd_config.j2
+    dest: "{{ item.0.dest_folder }}/{{ item.1.key }}.{{ item.0.type }}"
     owner: root
     group: systemd-network
-    mode: 0640
-  loop: "{{ query('subelements', all_files, 'files' ) }}"
+    mode: "0640"
+  loop: "{{ query('subelements', all_files, 'files') }}"
   loop_control:
-    label:
-      type: "{{ item.0.type }}"
-      name: "{{ item.1.key }}"
-  notify: restart systemd-networkd
+    label: "type: {{ item.0.type }}, name: {{ item.1.key }}"
+  notify: Restart systemd-networkd
+  register: systemd_networkd_status
 
 - name: Set systemd_network_status task
   ansible.builtin.set_fact:
