@@ -91,6 +91,117 @@ systemd_networkd_network:
 What will create an LACP bond interface `bond0`, containing all interfaces
 starting by `eth`.
 
+3) Configure interface based routing
+
+```yaml
+systemd_networkd_conf:
+  route_tables:
+    - Network:
+        - RouteTable: "rtvlan10:10"
+        - RouteTable: "rtvlan11:11"
+
+systemd_networkd_netdev:
+  netdev_bond0:
+    - NetDev:
+        - Name: bond0
+        - Kind: bond
+
+    - Bond:
+        - Mode: active-backup
+        - MIIMonitorSec: 0.1
+        - UpDelaySec: 0.2
+        - DownDelaySec: 0.2
+        - LACPTransmitRate: fast
+        - TransmitHashPolicy: layer2+3
+
+  netdev_vlan10:
+    - NetDev:
+        - Name: netdev_vlan10
+        - Kind: vlan
+    - VLAN:
+        - Id: 10
+
+  netdev_vlan11:
+    - NetDev:
+        - Name: netdev_vlan11
+        - Kind: vlan
+    - VLAN:
+        - Id: 11
+
+  netdev_bridge_vm_vlan10:
+    - NetDev:
+        - Name: netdev_bridge_vlan10
+        - Kind: bridge
+
+  netdev_bridge_vm_vlan11:
+    - NetDev:
+        - Name: netdev_bridge_vlan11
+        - Kind: bridge
+
+systemd_networkd_network:
+  # Physical interfaces
+  eno3:
+    - Match:
+        - Name: eno3
+    - Network:
+        - Bond: bond0
+  eno4:
+    - Match:
+        - Name: eno4
+    - Network:
+        - Bond: bond0
+
+  bond0:
+    - Match:
+        - Name: bond0
+    - Network:
+        - Description: "Static/Unconfigured bond, for eno3 & eno4"
+
+        # We don't want any IP "on" the bond itself
+        - LinkLocalAddressing: "no"
+        - LLDP: "no"
+        - EmitLLDP: "no"
+        - IPv6AcceptRA: "no"
+        - IPv6SendRA: "no"
+
+        - VLAN: netdev_vlan10
+        - VLAN: netdev_vlan11
+
+  network_interface_vlan10:
+    - Match:
+        - Name: netdev_vlan10
+        - Type: vlan
+    - Network:
+        - Description: "Network interface on vlan10, connected to netdev_bridge_vm_vlan10"
+        - Bridge: "netdev_bridge_vm_vlan10"
+        - DHCP: "no"
+        - DNS: &gw_vlan10 "10.0.10.1"
+
+        - Address: "10.0.10.161/24"
+        - DNS: *gw_vlan10
+        - Gateway: *gw_vlan10
+
+  network_interface_vlan11:
+    - Match:
+        - Name: netdev_vlan11
+        - Type: vlan
+    - Network:
+        - Description: "Network interface on vlan11, connected to netdev_bridge_vm_vlan11"
+        - Bridge: "netdev_bridge_vm_vlan11"
+        - DHCP: "no"
+        - DNS: &gw_vlan11 "10.0.11.1"
+
+        - Address: "10.0.11.161/24"
+        - DNS: *gw_vlan11
+        - Gateway: *gw_vlan11
+
+systemd_networkd_rt_tables:
+  - id: 11
+    name: rtvlan11
+  - id: 20
+    name: rtvlan20
+```
+
 systemd-resolved
 ----------------
 
