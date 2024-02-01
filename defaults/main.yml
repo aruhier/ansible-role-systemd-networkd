@@ -4,7 +4,8 @@ systemd_networkd_netdev: {}
 systemd_networkd_network: {}
 systemd_networkd_conf: {}
 
-systemd_networkd_conf_directory: /etc/systemd/networkd.conf.d/
+systemd_networkd_directory: /etc/systemd/network
+systemd_networkd_conf_directory: /etc/systemd/networkd.conf.d
 
 systemd_networkd_apply_config: false
 systemd_networkd_enable_resolved: true
