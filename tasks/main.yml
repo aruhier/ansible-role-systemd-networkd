@@ -11,7 +11,7 @@
   ansible.builtin.systemd:
     name: systemd-networkd
     enabled: true
-  when: systemd_networkd_network or systemd_networkd_link or systemd_networkd_netdev
+  when: (systemd_networkd_network | length > 0) or (systemd_networkd_link | length > 0) or (systemd_networkd_netdev | length > 0)
 
 - name: Start and enable systemd-resolved
   become: true
